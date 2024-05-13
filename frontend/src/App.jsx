@@ -12,7 +12,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/send" element={<SendMoney />} />
           <Route path="/signin" element={<Signin />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/" element={<Signup />} />
         </Routes>
       </BrowserRouter>
     </>
