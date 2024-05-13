@@ -76,10 +76,12 @@ router.post("/signin", async (req, res) => {
     password: req.body.password,
   });
 
+  const userId = existingUser._id;
+
   if (existingUser) {
     const token = jwt.sign(
       {
-        userId: existingUser._id,
+        userId,
       },
       JWT_SECRET
     );
@@ -114,21 +116,22 @@ router.put("/", authMiddleware, async (req, res) => {
   });
 });
 
-router.get("/bulk", async (req, res) => {
+router.get("/bulk", authMiddleware, async (req, res) => {
   const filter = req.query.filter || "";
+  const signedInUser = req.userId; // Assuming your authentication middleware sets req.user with user details
 
   const users = await User.find({
-    $or: [
+    _id: { $ne: signedInUser }, // Exclude the current user
+    $and: [
       {
-        firstName: {
-          $regex: filter,
-        },
+        $or: [
+          { firstName: { $regex: filter } },
+          { lastName: { $regex: filter } },
+        ],
       },
       {
-        lastName: {
-          $regex: filter,
-        },
-      },
+        _id: { $ne: signedInUser },
+      }, // Ensure signed-in user is excluded again
     ],
   });
 
