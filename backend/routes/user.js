@@ -83,6 +83,7 @@ router.post("/signin", async (req, res) => {
       {
         userId,
       },
+      { userId },
       JWT_SECRET
     );
 
